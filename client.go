@@ -26,7 +26,7 @@ func (c *Client) get(path string, result interface{}) error {
 	if err != nil {
 		return err
 	}
-	c.Logger.Debugw("invest sdk post response", "path", path, "resp", string(respBodyBytes))
+	c.Logger.Debugw("pricing sdk post response", "path", path, "resp", string(respBodyBytes))
 	if resp.StatusCode != http.StatusOK {
 		return errors.Errorf("none ok status: %d", resp.StatusCode)
 	}

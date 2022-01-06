@@ -2,23 +2,16 @@ package sdk
 
 import (
 	"net/http"
-	"os"
 	"testing"
 
-	"github.com/test-go/testify/require"
-	"go.uber.org/zap/zapcore"
+	"github.com/stretchr/testify/assert"
+	"go.uber.org/zap"
 )
 
 func getTestHttpClient(t *testing.T) *Client {
-	logger, recoverLog, err := NewLogger(ZapConf{
-		Level: zapcore.DebugLevel,
-	}, os.Stdout)
-	t.Cleanup(recoverLog)
-	require.NoError(t, err)
-	sLogger := logger.Sugar()
+	sLogger := zap.S()
 
 	client := &Client{
-		// Host: "http://127.0.0.1:3500",
 		Host:   "https://staging.partyparrot.finance",
 		Client: http.DefaultClient,
 		Logger: sLogger,
@@ -27,21 +20,12 @@ func getTestHttpClient(t *testing.T) *Client {
 	return client
 }
 
-func TestSDK(t *testing.T) {
-	client := getTestHttpClient(t)
-
-	tokenMint := "yUSD1iVx5cgmRREB81pJW8byQTaY3HwsPzeMLCm26Ne"
-	timestamp := uint64(1640152800000)
-	tokenBalances, err := client.FetchTokenBalance(tokenMint, timestamp)
-
-	require.NoError(t, err)
-
-	t.Logf("%+v\n", tokenBalances)
-
-	vaultType := "8PcJ5FmtmuYQCvBhaHkVY5DKVBn8BsMtV5RVqHU4h8ir"
-
-	vaults, err := client.FetchParrotVault(vaultType, timestamp)
-
-	require.NoError(t, err)
-	t.Logf("%+v\n", vaults)
+func TestMain(t *testing.T) {
+	pricing, err := getTestHttpClient(t).
+		FetchPricing("dCN5mwZbDeWCHfp9NF7tv9VVHPmjPSKLpUnKc4WC8bJ")
+	assert.NoError(t, err)
+	assert.Greater(t, pricing.ROI, float64(0))
+	assert.Greater(t, pricing.BondingPrice, float64(0))
+	assert.Greater(t, pricing.MarketPrice, float64(0))
+	//assert.Greater(t, pricing.MaxPayout, float64(0)) // TODO temporality
 }
