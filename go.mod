@@ -1,4 +1,4 @@
-module github.com/bunnyducky/pricingsdk
+module github.com/bunnyducky/pricing-sdk
 
 go 1.17
 
