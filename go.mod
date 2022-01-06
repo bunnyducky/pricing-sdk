@@ -1,4 +1,4 @@
-module github.com/gopartyparrot/snapshot-sdk
+module github.com/bunnyducky/pricingsdk
 
 go 1.17
 
