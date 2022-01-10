@@ -9,6 +9,7 @@ type Pricing struct {
 	MarketPrice  float64 `json:"marketPrice"`
 	BondingPrice float64 `json:"bondingPrice"`
 	MaxPayout    float64 `json:"maxPayout"`
+	PayoutAmount float64 `json:"payoutAmount"`
 }
 
 func (c *Client) FetchPricing(account string) (Pricing, error) {
