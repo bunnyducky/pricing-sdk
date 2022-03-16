@@ -2,6 +2,8 @@ package pricingsdk
 
 import (
 	"fmt"
+
+	"github.com/gagliardetto/solana-go"
 )
 
 type Pricing struct {
@@ -12,7 +14,7 @@ type Pricing struct {
 	PayoutAmount float64 `json:"payoutAmount"`
 }
 
-func (c *Client) FetchPricing(account string) (Pricing, error) {
+func (c *Client) FetchPricing(account solana.PublicKey) (Pricing, error) {
 	path := fmt.Sprintf("/bonding/%s", account)
 	var result Pricing
 	err := c.get(path, &result)

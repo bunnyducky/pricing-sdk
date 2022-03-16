@@ -8,25 +8,37 @@ import (
 	"strings"
 
 	"github.com/pkg/errors"
-	"go.uber.org/zap"
+	"github.com/rs/zerolog"
 )
 
+const ProdEndpoint = "https://bonding-api.bunnyducky.com"
+
+func NewClient(host string, httpClient *http.Client, log *zerolog.Logger) *Client {
+	return &Client{
+		host:   host,
+		client: httpClient,
+		log:    log,
+	}
+}
+
 type Client struct {
-	Host   string
-	Client *http.Client
-	Logger *zap.SugaredLogger
+	host   string
+	client *http.Client
+	log    *zerolog.Logger
 }
 
 func (c *Client) get(path string, result interface{}) error {
-	resp, err := c.Client.Get(fmt.Sprintf("%s/api/v1/%s", c.Host, strings.TrimLeft(path, "/")))
+	resp, err := c.client.Get(fmt.Sprintf("%s/api/v1/%s", c.host, strings.TrimLeft(path, "/")))
 	if err != nil {
 		return errors.Wrap(err, "http post err")
 	}
+	defer resp.Body.Close()
+
 	respBodyBytes, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return err
 	}
-	c.Logger.Debugw("pricing sdk post response", "path", path, "resp", string(respBodyBytes))
+	c.log.Debug().Str("path", path).Str("resp", string(respBodyBytes)).Msg("pricing sdk api response")
 	if resp.StatusCode != http.StatusOK {
 		return errors.Errorf("none ok status: %d", resp.StatusCode)
 	}
