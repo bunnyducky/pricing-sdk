@@ -25,4 +25,7 @@ func TestMain(t *testing.T) {
 	assert.Greater(t, pricing.MarketPrice, float64(0))
 	assert.Greater(t, pricing.PayoutAmount, float64(0))
 	assert.Greater(t, pricing.MaxPayout, float64(0))
+
+	assert.Greater(t, pricing.MaxBondDepositAmount(), .0)
+	assert.Greater(t, 1.0, pricing.BondDiscount())
 }

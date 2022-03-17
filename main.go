@@ -14,6 +14,15 @@ type Pricing struct {
 	PayoutAmount float64 `json:"payoutAmount"`
 }
 
+// amount in UI
+func (price Pricing) MaxBondDepositAmount() float64 {
+	return (price.MaxPayout / price.PayoutAmount)
+}
+
+func (price Pricing) BondDiscount() float64 {
+	return 1 - (price.BondingPrice / price.MarketPrice)
+}
+
 func (c *Client) FetchPricing(account solana.PublicKey) (Pricing, error) {
 	path := fmt.Sprintf("/bonding/%s", account)
 	var result Pricing
